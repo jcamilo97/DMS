@@ -9,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "area")
 public class Area implements Serializable{
 
+    private static final long serialVersionUID = 5859375921628981852L;
+
     @Id
     @Column(name="area_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

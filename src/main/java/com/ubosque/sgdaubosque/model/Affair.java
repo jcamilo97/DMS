@@ -20,6 +20,9 @@ public class Affair implements Serializable{
     @Column(name="aff_name",columnDefinition = "varchar")
     private String name;
 
+    public Affair(){
+        
+    }
     public Long getId() {
         return id;
     }
