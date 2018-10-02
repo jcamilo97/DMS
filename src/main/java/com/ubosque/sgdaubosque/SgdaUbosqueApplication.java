@@ -9,7 +9,7 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 @EntityScan(basePackageClasses = { 
-	SpringApplication.class,
+	SgdaUbosqueApplication.class,
 	Jsr310JpaConverters.class 
 })
 public class SgdaUbosqueApplication {

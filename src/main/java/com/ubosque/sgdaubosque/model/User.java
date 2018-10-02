@@ -35,7 +35,6 @@ public class User extends DateAudit {
     // change at model
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usr_area_id", referencedColumnName = "area_id")
-    @Column(name="usr_area_id")
     @NotBlank
     private Area areaID;
 
