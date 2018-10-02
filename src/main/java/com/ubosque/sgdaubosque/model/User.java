@@ -9,7 +9,6 @@ import javax.validation.constraints.Size;
 import com.ubosque.sgdaubosque.model.audit.DateAudit;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -38,7 +37,7 @@ public class User extends DateAudit {
     @JoinColumn(name = "usr_area_id", referencedColumnName = "area_id")
     @Column(name="usr_area_id")
     @NotBlank
-    private String areaID;
+    private Area areaID;
 
     @NaturalId
     @NotBlank
@@ -52,15 +51,11 @@ public class User extends DateAudit {
     @Column(name="usr_password")
     private String password;
     
-    @OneToMany(fetch = FetchType.LAZY)
-    @NotBlank
-    // @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usr_profile_id", referencedColumnName = "pro_id")
-    // @JoinTable(name = "user_roles",
-    //         joinColumns = @JoinColumn(name = "user_id"),
-    //         inverseJoinColumns = @JoinColumn(name = "role_id")
-    // list<profile>
-    private List profiles;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_profiles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "profile_id"))
+    private Set<Profile> profiles = new HashSet<>();
 
     public User() {
 
@@ -70,6 +65,14 @@ public class User extends DateAudit {
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+
+    public User(String name, String email, String password, Area area, Set<Profile> profile) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.areaID = area;
+        this.profiles = profile;
     }
 
     public Long getId() {
@@ -104,11 +107,11 @@ public class User extends DateAudit {
         this.password = password;
     }
 
-    // public Set<Role> getRoles() {
-    //     return roles;
-    // }
+    public Set<Profile> getRoles() {
+        return profiles;
+    }
 
-    // public void setRoles(Set<Role> roles) {
-    //     this.roles = roles;
-    // }
+    public void setRoles(Set<Profile> roles) {
+        this.profiles = roles;
+    }
 }
