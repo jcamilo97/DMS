@@ -3,6 +3,7 @@ package com.ubosque.sgdaubosque.model;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "affair")
@@ -14,7 +15,8 @@ public class Affair implements Serializable{
     @Column(name="aff_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @NotBlank
     @Column(name="aff_name",columnDefinition = "varchar")
     private String name;
 

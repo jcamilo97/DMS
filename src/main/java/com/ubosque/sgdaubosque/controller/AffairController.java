@@ -27,13 +27,13 @@ public class AffairController {
     AffairRepository affairRepository;
 
     @GetMapping("/affair")
-    public List<Affair> getAllNotes() {
+    public List<Affair> getAllAffair() {
         return affairRepository.findAll();
     }
 
     @PostMapping("/affair")
-    public Affair createAffair(@Valid @RequestBody Affair note) {
-        return affairRepository.save(note);
+    public Affair createAffair(@Valid @RequestBody Affair affair) {
+        return affairRepository.save(affair);
     }
 
     @GetMapping("/affair/{id}")
