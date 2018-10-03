@@ -106,11 +106,11 @@ public class User extends DateAudit {
         this.password = password;
     }
 
-    public Set<Profile> getRoles() {
+    public Set<Profile> getProfiles() {
         return profiles;
     }
 
-    public void setRoles(Set<Profile> roles) {
+    public void setProfiles(Set<Profile> roles) {
         this.profiles = roles;
     }
 }
