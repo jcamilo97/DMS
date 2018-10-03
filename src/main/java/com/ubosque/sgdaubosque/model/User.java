@@ -33,7 +33,7 @@ public class User extends DateAudit {
     private String lastName;
 
     // change at model
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usr_area_id", referencedColumnName = "area_id")
     @NotBlank
     private Area areaID;
@@ -60,8 +60,9 @@ public class User extends DateAudit {
 
     }
 
-    public User(String name, String email, String password) {
+    public User(String name, String lastName, String email, String password) {
         this.name = name;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
@@ -104,6 +105,14 @@ public class User extends DateAudit {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Area getArea(){
+        return areaID;
+    }
+    
+    public void setArea(Area a){
+        this.areaID = a;
     }
 
     public Set<Profile> getProfiles() {
