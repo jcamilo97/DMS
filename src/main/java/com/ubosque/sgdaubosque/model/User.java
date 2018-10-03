@@ -1,5 +1,6 @@
 package com.ubosque.sgdaubosque.model;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -10,33 +11,36 @@ import com.ubosque.sgdaubosque.model.audit.DateAudit;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
-@Table(name = "user", uniqueConstraints = {
+@Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
             "usr_email"
         })
 })
 public class User extends DateAudit {
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = -4023299907867915572L;
 
     @Id
     @Column(name="usr_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @org.hibernate.annotations.Type(type="pg-uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid4")
+    private UUID id;
 
     @NotBlank
     @Column(name="usr_name")
     private String name;
 
     @Column(name="usr_last_name")
-    private String lastName;
+    private String lastname;
 
     // change at model
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usr_area_id", referencedColumnName = "area_id")
-    @NotBlank
-    private Area areaID;
+   
+    private Area areaid;
 
     @NaturalId
     @NotBlank
@@ -60,9 +64,10 @@ public class User extends DateAudit {
 
     }
 
-    public User(String name, String lastName, String email, String password) {
+    public User(String name, String lastname, String email, String password) {
+        //this.id = UUID.randomUUID();
         this.name = name;
-        this.lastName = lastName;
+        this.lastname = lastname;
         this.email = email;
         this.password = password;
     }
@@ -71,15 +76,15 @@ public class User extends DateAudit {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.areaID = area;
+        this.areaid = area;
         this.profiles = profile;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -108,11 +113,11 @@ public class User extends DateAudit {
     }
 
     public Area getArea(){
-        return areaID;
+        return areaid;
     }
     
     public void setArea(Area a){
-        this.areaID = a;
+        this.areaid = a;
     }
 
     public Set<Profile> getProfiles() {

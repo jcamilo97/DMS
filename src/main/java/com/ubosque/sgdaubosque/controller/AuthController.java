@@ -1,6 +1,7 @@
 package com.ubosque.sgdaubosque.controller;
 
 import com.ubosque.sgdaubosque.exception.AppException;
+import com.ubosque.sgdaubosque.model.Area;
 //import com.ubosque.sgdaubosque.exception.AppException;
 import com.ubosque.sgdaubosque.model.Profile;
 // import com.ubosque.sgdaubosque.model.RoleName;
@@ -53,6 +54,9 @@ public class AuthController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    @Autowired
+     ;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -80,19 +84,22 @@ public class AuthController {
             return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
-
         // Creating user's account
-        User user = new User(signUpRequest.getName(),signUpRequest.getLastName(),
+        User user = new User(signUpRequest.getName(),signUpRequest.getLastname(),
                 signUpRequest.getEmail(), signUpRequest.getPassword());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
-        Profile useProfile = profileRepository.findById(signUpRequest.getProfileId())
-                .orElseThrow(() -> new AppException("User Role not set."));
 
+        System.out.println(signUpRequest.getAreaid()+"####"+signUpRequest.getProfileid());
+        Profile useProfile = profileRepository.findById(Long.parseLong(signUpRequest.getProfileid()))
+                .orElseThrow(() -> new AppException("User Profile not set."));
+
+        Area area = new Area(signUpRequest.getAreaid());
+        user.setArea(area);
         user.setProfiles(Collections.singleton(useProfile));
 
-        User result = userRepository.save(user);
+        User result;
+        result = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
