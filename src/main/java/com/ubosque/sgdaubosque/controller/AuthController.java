@@ -10,6 +10,7 @@ import com.ubosque.sgdaubosque.payload.ApiResponse;
 import com.ubosque.sgdaubosque.payload.JwtAuthenticationResponse;
 import com.ubosque.sgdaubosque.payload.LoginRequest;
 import com.ubosque.sgdaubosque.payload.SignUpRequest;
+import com.ubosque.sgdaubosque.repository.AreaRepository;
 import com.ubosque.sgdaubosque.repository.ProfileRepository;
 //import com.ubosque.sgdaubosque.repository.RoleRepository;
 import com.ubosque.sgdaubosque.repository.UserRepository;
@@ -39,72 +40,66 @@ import java.util.Collections;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+  @Autowired
+  AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+  @Autowired
+  UserRepository userRepository;
 
-    @Autowired
-    ProfileRepository profileRepository;
+  @Autowired
+  ProfileRepository profileRepository;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+  @Autowired
+  PasswordEncoder passwordEncoder;
 
-    @Autowired
-    JwtTokenProvider tokenProvider;
+  @Autowired
+  JwtTokenProvider tokenProvider;
 
-    @Autowired
-     ;
+  @Autowired
+  AreaRepository areaRepository;
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+  @PostMapping("/signin")
+  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsernameOrEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+    Authentication authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+    String jwt = tokenProvider.generateToken(authentication);
+    return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+  }
+
+  @PostMapping("/signup")
+  public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+      return new ResponseEntity(new ApiResponse(false, "Username is already taken!"), HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        // if(userRepository.existsByUsername(signUpRequest.getUsername())) {
-        //     return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
-        //             HttpStatus.BAD_REQUEST);
-        // }
-
-        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
-                    HttpStatus.BAD_REQUEST);
-        }
-        // Creating user's account
-        User user = new User(signUpRequest.getName(),signUpRequest.getLastname(),
-                signUpRequest.getEmail(), signUpRequest.getPassword());
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        System.out.println(signUpRequest.getAreaid()+"####"+signUpRequest.getProfileid());
-        Profile useProfile = profileRepository.findById(Long.parseLong(signUpRequest.getProfileid()))
-                .orElseThrow(() -> new AppException("User Profile not set."));
-
-        Area area = new Area(signUpRequest.getAreaid());
-        user.setArea(area);
-        user.setProfiles(Collections.singleton(useProfile));
-
-        User result;
-        result = userRepository.save(user);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/users/{username}")
-                .buildAndExpand(result.getName()).toUri();
-
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+      return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"), HttpStatus.BAD_REQUEST);
     }
+    // Creating user's account
+    User user = new User(signUpRequest.getName(), signUpRequest.getLastname(), signUpRequest.getEmail(),
+        signUpRequest.getPassword());
+
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+    Profile useProfile = profileRepository.findById(Long.parseLong(signUpRequest.getProfile()))
+        .orElseThrow(() -> new AppException("User Profile not set."));
+
+    Area area = areaRepository.findById(Long.parseLong(signUpRequest.getArea()))
+        .orElseThrow(() -> new AppException("Area not set."));
+
+    user.setArea(area);
+    user.setProfiles(Collections.singleton(useProfile));
+
+    User result;
+    result = userRepository.save(user);
+
+    URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/{username}")
+        .buildAndExpand(result.getName()).toUri();
+
+    return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+  }
 }

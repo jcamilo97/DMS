@@ -8,7 +8,8 @@ import org.springframework.format.annotation.NumberFormat;
  */
 
 public class SignUpRequest {
-
+    @NotBlank
+    @Size(min = 4)
     private String name;
 
     @Size(min = 4)
@@ -28,10 +29,10 @@ public class SignUpRequest {
     private String password;
 
     @NumberFormat
-    private String areaid;
+    private String area;
     
     @NumberFormat
-    private String profileid;
+    private String profile;
 
     public String getName() {
         return name;
@@ -73,19 +74,19 @@ public class SignUpRequest {
         this.password = password;
     }
 
-    public String getAreaid(){
-        return  areaid;
+    public String getArea(){
+        return  area;
     }
 
-    public void setAreaid(String areaid) {
-        this.areaid = areaid;
+    public void setArea(String area) {
+        this.area = area;
     }
 
-    public String getProfileid(){
-        return profileid;
+    public String getProfile(){
+        return profile;
     }
 
-    public void setProfileid(String profileid) {
-        this.areaid = profileid;
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 }
