@@ -66,6 +66,9 @@ public class User extends DateAudit {
     public User() {
 
     }
+    public User(String uuid) {
+        this.id = UUID.fromString(uuid);
+    }
 
     public User(String name, String lastname, String email, String password) {
         this.id = UUID.randomUUID();

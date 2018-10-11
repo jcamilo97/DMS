@@ -1,5 +1,6 @@
 package com.ubosque.sgdaubosque.model;
 
+import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -9,7 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.sql.Timestamp;
 import com.ubosque.sgdaubosque.model.audit.DateAudit;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -19,8 +22,9 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "document")
 public class Document  extends DateAudit {
+    private static final long serialVersionUID = -787168922765119370L;
 
-    private static final long serialVersionUID = 1L;
+    private static final String DEFAULT_NOW = "default now()";
 
     
     @Id
@@ -33,10 +37,12 @@ public class Document  extends DateAudit {
     private String title;
 
     @Column(name="doc_date")
-    private String dateDoc;
+    @Temporal(TemporalType.DATE)
+    private Date dateDoc;
 
-    @Column(name="doc_date_settled")
-    private String dateInsertAt;
+    @Column(name="doc_date_settled", columnDefinition=DEFAULT_NOW)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateInsertAt;
 
     @Column(name="doc_origin")
     private String origin;
@@ -62,6 +68,21 @@ public class Document  extends DateAudit {
     @Column(name="doc_annexed")
     private String annexe;
 
+    public Document(String title, Date dateDoc, String origin, int docNumber, String comments, String annexe) {
+        this.id = UUID.randomUUID();
+        this.title = title;
+        this.dateDoc = dateDoc;
+        // this.dateInsertAt = dateInsertAt;
+        this.origin = origin;
+        this.docNumber = docNumber;
+        this.comments = comments;
+        this.annexe = annexe;
+    }
+
+
+    public Document() {
+    }
+
     public UUID getId() {
         return this.id;
     }
@@ -78,19 +99,19 @@ public class Document  extends DateAudit {
         this.title = title;
     }
 
-    public String getDateDoc() {
+    public Date getDateDoc() {
         return this.dateDoc;
     }
 
-    public void setDateDoc(String dateDoc) {
+    public void setDateDoc(Date dateDoc) {
         this.dateDoc = dateDoc;
     }
 
-    public String getDateInsertAt() {
+    public Date getDateInsertAt() {
         return this.dateInsertAt;
     }
 
-    public void setDateInsertAt(String dateInsertAt) {
+    public void setDateInsertAt(Date dateInsertAt) {
         this.dateInsertAt = dateInsertAt;
     }
 
