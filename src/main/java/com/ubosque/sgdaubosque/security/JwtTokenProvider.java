@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by rajeevkumarsingh on 19/08/17.
@@ -38,13 +39,14 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Long getUserIdFromJWT(String token) {
+    public UUID getUserIdFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
+        UUID idUser =   UUID.fromString(claims.getSubject());
 
-        return Long.parseLong(claims.getSubject());
+        return idUser;
     }
 
     public boolean validateToken(String authToken) {
