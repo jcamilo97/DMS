@@ -13,6 +13,7 @@ import com.ubosque.sgdaubosque.repository.AffairRepository;
 import com.ubosque.sgdaubosque.repository.DocumentRepository;
 import com.ubosque.sgdaubosque.model.Document;
 import com.ubosque.sgdaubosque.repository.UserRepository;
+import com.ubosque.sgdaubosque.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,9 @@ public class DocumentController {
 
     @Autowired
     AffairRepository affairRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/documents")
     public List<Document> getAllAffair() {
@@ -63,7 +67,14 @@ public class DocumentController {
         doc.setUserRecieve(receive);
 
         Document resultDoc = documentRepository.save(doc);
-
+        
+        try {
+            emailService.sendMail(target.getEmail(), "Tienes una radicacion Nueva");
+        } catch (Exception e) {
+                //TODO: handle exception
+                return "{message: La radicacion fue exitosa pero tenemos problemas para notificar al destinario via email}";
+        }
+       
         return "{message:Success}";
     }
 
