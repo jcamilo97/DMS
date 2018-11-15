@@ -1,6 +1,8 @@
 package com.ubosque.sgdaubosque.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -19,6 +21,23 @@ public class Profile implements Serializable{
     @NotBlank
     @Column(name="pro_name",columnDefinition = "varchar")
     private String name;
+
+    @Column(name="rol_actions",columnDefinition = "jsonb")
+    private String actions;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "profile_permissions",
+            joinColumns = @JoinColumn(name = "profile_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    private Set<Permissions> profiles = new HashSet<>();
+
+    public Set<Permissions> getProfiles() {
+        return this.profiles;
+    }
+
+    public void setProfiles(Set<Permissions> profiles) {
+        this.profiles = profiles;
+    }
 
     public Profile() {
 

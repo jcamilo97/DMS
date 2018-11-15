@@ -59,6 +59,12 @@ public class AuthController {
   AreaRepository areaRepository;
 
   @PostMapping("/signin")
+  /**
+   * authenticateUser valida las credenciales del usuario user y password
+   * {@link /api/auth/signin}
+   * @param loginRequest - username y password
+   * @return {jwt} -token de autenticacion.
+   */
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
     Authentication authentication = authenticationManager.authenticate(
@@ -71,6 +77,11 @@ public class AuthController {
   }
 
   @PostMapping("/signup")
+  /**
+   * registerUser permite la creacion de un usuario
+   * @param signUpRequest
+   * @return 
+   */
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
       return new ResponseEntity(new ApiResponse(false, "Username is already taken!"), HttpStatus.BAD_REQUEST);
