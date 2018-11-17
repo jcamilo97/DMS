@@ -29,15 +29,7 @@ public class Profile implements Serializable{
     @JoinTable(name = "profile_permissions",
             joinColumns = @JoinColumn(name = "profile_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    private Set<Permissions> profiles = new HashSet<>();
-
-    public Set<Permissions> getProfiles() {
-        return this.profiles;
-    }
-
-    public void setProfiles(Set<Permissions> profiles) {
-        this.profiles = profiles;
-    }
+    private Set<Permissions> permissions = new HashSet<>();
 
     public Profile() {
 
@@ -66,4 +58,22 @@ public class Profile implements Serializable{
     public void setName(String name) {
         this.name = name;
     }
+
+
+    public String getActions() {
+        return this.actions;
+    }
+
+    public void setActions(String actions) {
+        this.actions = actions;
+    }
+
+    public Set<Permissions> getPermissions() {
+        return this.permissions;
+    }
+
+    public void setPermissions(Set<Permissions> permissions) {
+        this.permissions = permissions;
+    }
+
 }

@@ -2,16 +2,14 @@ package com.ubosque.sgdaubosque.security;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ubosque.sgdaubosque.model.Profile;
 import com.ubosque.sgdaubosque.model.User;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserPrincipal implements UserDetails {
@@ -31,13 +29,16 @@ public class UserPrincipal implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(UUID id, String name, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    private Set<Profile> profiles;
+
+    public UserPrincipal(UUID id, String name, String username, String email, String password, Collection<? extends GrantedAuthority> authorities, Set<Profile> profiles) {
         this.id = id;
         this.name = name;
         this.username = username; // will be use
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+        this.profiles = profiles;
     }
 
     public static UserPrincipal create(User user) {
@@ -48,10 +49,11 @@ public class UserPrincipal implements UserDetails {
         return new UserPrincipal(
                 user.getId(),
                 user.getName(),
-                "ss",
+                user.getUserName(),
                 user.getEmail(),
                 user.getPassword(),
-                authorities
+                authorities,
+                user.getProfiles()
         );
     }
 
@@ -80,6 +82,14 @@ public class UserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public Set<Profile> getProfiles() {
+        return profiles;
+    }
+
+    public void setProfiles(Set<Profile> profiles) {
+        this.profiles = profiles;
     }
 
     @Override

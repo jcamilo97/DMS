@@ -1,5 +1,6 @@
 package com.ubosque.sgdaubosque.security;
 
+import com.ubosque.sgdaubosque.payload.RolOrProfile;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,14 +8,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.*;
 
 /**
  * Created by rajeevkumarsingh on 19/08/17.
  */
+
 @Component
 public class JwtTokenProvider {
+
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
@@ -28,12 +31,24 @@ public class JwtTokenProvider {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
+        List<Object> permissions =  userPrincipal.getProfiles().stream().map(profile -> profile.getPermissions() )
+                .flatMap(x -> x.stream())
+                .distinct()
+                .collect(Collectors.toList());
+        String s = userPrincipal.getProfiles().stream().map(profile -> profile.getName()).collect(Collectors.joining());
+        List<Object> rolesOrProfiles = userPrincipal.getProfiles().stream()
+                .map(profile -> new RolOrProfile(profile))
+                .collect(Collectors.toList());
+
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+
 
         return Jwts.builder()
                 .setSubject(userPrincipal.getId().toString())
                 .setIssuedAt(new Date())
+                .claim("roles", rolesOrProfiles)
+                .claim("permissions", permissions)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
