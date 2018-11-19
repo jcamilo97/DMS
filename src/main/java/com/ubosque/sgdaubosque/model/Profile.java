@@ -1,11 +1,10 @@
 package com.ubosque.sgdaubosque.model;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "profile")
@@ -42,6 +41,12 @@ public class Profile implements Serializable{
     public Profile(String name) {
         this.name = name;
     }
+
+    public Profile(String name, String actions) {
+        this.name = name;
+        this.actions = actions;
+    }
+
 
     public Long getId() {
         return id;

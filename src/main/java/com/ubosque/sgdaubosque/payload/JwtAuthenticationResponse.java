@@ -1,21 +1,23 @@
 package com.ubosque.sgdaubosque.payload;
 
+import java.util.Map;
+
 /**
  * Created by rajeevkumarsingh on 19/08/17.
  */
 public class JwtAuthenticationResponse {
-    private String accessToken;
+    private  String accessToken;
     private String tokenType = "Bearer";
 
     public JwtAuthenticationResponse(String accessToken) {
         this.accessToken = accessToken;
     }
-
-    public String getAccessToken() {
+    
+    public String getaccessToken() {
         return accessToken;
     }
 
-    public void setAccessToken(String accessToken) {
+    public void setaccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
 

@@ -1,14 +1,13 @@
 package com.ubosque.sgdaubosque.model;
 
+import com.ubosque.sgdaubosque.model.audit.DateAudit;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-import com.ubosque.sgdaubosque.model.audit.DateAudit;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -62,14 +61,14 @@ public class User extends DateAudit {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "profile_id"))
     private Set<Profile> profiles = new HashSet<>();
-
+    
     public User() {
 
     }
     public User(String uuid) {
         this.id = UUID.fromString(uuid);
     }
-
+    
     public User(String name, String lastname, String email, String password) {
         this.id = UUID.randomUUID();
         this.name = name;
@@ -78,10 +77,10 @@ public class User extends DateAudit {
         this.password = password;
     }
 
-    public User(String name, String email, String password, Area area, Set<Profile> profile) {
+    public User(String name, String email, String username, Area area, Set<Profile> profile) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.username = username;
         this.areaid = area;
         this.profiles = profile;
     }

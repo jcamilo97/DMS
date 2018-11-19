@@ -18,7 +18,6 @@ import java.util.stream.*;
 @Component
 public class JwtTokenProvider {
 
-
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     @Value("${app.jwtSecret}")
@@ -35,33 +34,40 @@ public class JwtTokenProvider {
                 .flatMap(x -> x.stream())
                 .distinct()
                 .collect(Collectors.toList());
-        String s = userPrincipal.getProfiles().stream().map(profile -> profile.getName()).collect(Collectors.joining());
-        List<Object> rolesOrProfiles = userPrincipal.getProfiles().stream()
+        
+        List<RolOrProfile> rolesOrProfiles = userPrincipal.getProfiles().stream()
                 .map(profile -> new RolOrProfile(profile))
                 .collect(Collectors.toList());
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
-
+              
+        Map<String,String> user = new HashMap<>();
+        user.put("name", userPrincipal.getName());
+        user.put("username", userPrincipal.getUsername());
+        user.put("email", userPrincipal.getEmail());
 
         return Jwts.builder()
-                .setSubject(userPrincipal.getId().toString())
-                .setIssuedAt(new Date())
-                .claim("roles", rolesOrProfiles)
-                .claim("permissions", permissions)
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
+        .setSubject(userPrincipal.getId().toString())
+        .setIssuedAt(new Date())
+        .claim("user", user)
+        .claim("roles", rolesOrProfiles)
+        .claim("permissions", permissions)
+        .setExpiration(expiryDate)
+        .signWith(SignatureAlgorithm.HS512, jwtSecret)
+        .compact();
     }
 
     public UUID getUserIdFromJWT(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-        UUID idUser =   UUID.fromString(claims.getSubject());
+        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+        UUID idUser = UUID.fromString(claims.getSubject());
 
         return idUser;
+    }
+
+    public Claims getUserBody(String token) {
+        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+        return claims;
     }
 
     public boolean validateToken(String authToken) {

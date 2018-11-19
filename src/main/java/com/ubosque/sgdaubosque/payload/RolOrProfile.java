@@ -3,26 +3,27 @@ package com.ubosque.sgdaubosque.payload;
 import com.ubosque.sgdaubosque.model.Profile;
 
 public class RolOrProfile {
-    private String roleorperfil;
+    private String name;
     private String[] actions;
 
     public RolOrProfile(String nameRol, String[] actions) {
-        this.roleorperfil = nameRol;
+        this.name = nameRol;
         this.actions = actions;
     }
 
     public RolOrProfile(Profile profile) {
-        this.roleorperfil = profile.getName();
-        this.actions = profile.getActions().substring(2, profile.getActions().length() - 2).replace("\"","").split(",");
+        this.name = profile.getName();
+        String act = profile.getActions().substring(1, profile.getActions().length() - 1);
+        this.actions = profile.getActions().substring(1, profile.getActions().length() - 2).replace("\"","").split(",");
     }
 
 
-    public String getRoleorperfil() {
-        return roleorperfil;
+    public String getName() {
+        return name;
     }
 
-    public void setRoleorperfil(String roleorperfil) {
-        this.roleorperfil = roleorperfil;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String[] getActions() {
