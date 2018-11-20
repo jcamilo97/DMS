@@ -13,7 +13,7 @@ public class RolOrProfile {
 
     public RolOrProfile(Profile profile) {
         this.name = profile.getName();
-        String act = profile.getActions().substring(1, profile.getActions().length() - 1);
+        //String act = profile.getActions().substring(1, profile.getActions().length() - 1);
         this.actions = profile.getActions().substring(1, profile.getActions().length() - 2).replace("\"","").split(",");
     }
 

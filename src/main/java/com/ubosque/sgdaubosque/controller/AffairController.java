@@ -28,7 +28,7 @@ public class AffairController {
     AffairRepository affairRepository;
 
     @GetMapping("/affair")
-    @PreAuthorize("hasRole('_SUPER_ADMIN')")
+    @PreAuthorize("hasRole('cccADMIN')")
     public List<Affair> getAllAffair() {
         return affairRepository.findAll();
     }
