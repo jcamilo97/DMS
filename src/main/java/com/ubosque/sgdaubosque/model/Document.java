@@ -1,21 +1,11 @@
 package com.ubosque.sgdaubosque.model;
 
+import com.ubosque.sgdaubosque.model.audit.DateAudit;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.sql.Timestamp;
-import com.ubosque.sgdaubosque.model.audit.DateAudit;
-
-import org.hibernate.annotations.GenericGenerator;
 /**
  * Document
  */
@@ -60,6 +50,7 @@ public class Document  extends DateAudit {
     private User userRecieve;
 
     @Column(name="doc_number_settled")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int docNumber;
 
     @Column(name="doc_comments")
@@ -68,20 +59,27 @@ public class Document  extends DateAudit {
     @Column(name="doc_annexed")
     private String annexe;
 
-    public Document(String title, Date dateDoc, String origin, int docNumber, String comments, String annexe) {
+    public Document() {
+    }
+
+    public Document(String title, Date dateDoc, String origin, String comments) {
         this.id = UUID.randomUUID();
         this.title = title;
         this.dateDoc = dateDoc;
         // this.dateInsertAt = dateInsertAt;
         this.origin = origin;
-        this.docNumber = docNumber;
         this.comments = comments;
-        this.annexe = annexe;
     }
 
-
-    public Document() {
+    public void  setDocument(String title, Date dateDoc, String origin, String comments) {
+        this.id = UUID.randomUUID();
+        this.title = title;
+        this.dateDoc = dateDoc;
+        // this.dateInsertAt = dateInsertAt;
+        this.origin = origin;
+        this.comments = comments;
     }
+
 
     public UUID getId() {
         return this.id;

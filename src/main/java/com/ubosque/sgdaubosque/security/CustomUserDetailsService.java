@@ -32,8 +32,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
-    
-    Gson gson = new Gson();
 
     @Override
     @Transactional
@@ -59,6 +57,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Transactional
     public UserDetails loadUserByToken(Claims claimsUser, UUID id) {
+        Gson gson = new Gson();
         User user = gson.fromJson(claimsUser.get("user").toString(),User.class);
         String array = gson.toJson(claimsUser.get("roles"));
         List<RolOrProfile> setRoles = gson.fromJson(array, new TypeToken<List<RolOrProfile>>(){}.getType());

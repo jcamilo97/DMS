@@ -1,12 +1,13 @@
 package com.ubosque.sgdaubosque.repository;
 
+import com.ubosque.sgdaubosque.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import com.ubosque.sgdaubosque.model.User;
 /**
  * UserRepository
  */
@@ -25,4 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByUsername(String username);
 
     Boolean existsByEmail(String email);
+
+    @Query(value = "SELECT u.id, CONCAT(u.name, ' ', u.lastname) as name FROM User u")
+    List<User> findAllUsers();
 }

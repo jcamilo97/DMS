@@ -101,6 +101,14 @@ public class User extends DateAudit {
         this.name = name;
     }
 
+    public String getLastname() {
+        return this.lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
     public String getUserName() {
         return username;
     }

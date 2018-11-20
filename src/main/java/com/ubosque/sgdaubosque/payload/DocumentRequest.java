@@ -1,20 +1,16 @@
 package com.ubosque.sgdaubosque.payload;
 
-import java.sql.Date;
-
-import javax.validation.constraints.NotBlank;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
+
+import javax.validation.constraints.NotBlank;
 
 public class DocumentRequest {
 
     private String title;
 
     @DateTimeFormat
-    private Date dateDoc;
-
-    private String dateInsertAt;
+    private String dateDoc;
 
     private String origin;
 
@@ -26,9 +22,6 @@ public class DocumentRequest {
 
     @NotBlank
     private String userRecieve;
-
-    @NumberFormat
-    private int docNumber;
 
     private String comments;
 
@@ -42,20 +35,12 @@ public class DocumentRequest {
         this.title = title;
     }
 
-    public Date getDateDoc() {
+    public String getDateDoc() {
         return this.dateDoc;
     }
 
-    public void setDateDoc(Date dateDoc) {
+    public void setDateDoc(String dateDoc) {
         this.dateDoc = dateDoc;
-    }
-
-    public String getDateInsertAt() {
-        return this.dateInsertAt;
-    }
-
-    public void setDateInsertAt(String dateInsertAt) {
-        this.dateInsertAt = dateInsertAt;
     }
 
     public String getOrigin() {
@@ -88,14 +73,6 @@ public class DocumentRequest {
 
     public void setUserRecieve(String userRecieve) {
         this.userRecieve = userRecieve;
-    }
-
-    public int getDocNumber() {
-        return this.docNumber;
-    }
-
-    public void setDocNumber(int docNumber) {
-        this.docNumber = docNumber;
     }
 
     public String getComments() {

@@ -5,11 +5,9 @@ import com.ubosque.sgdaubosque.model.Affair;
 import com.ubosque.sgdaubosque.repository.AffairRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +20,6 @@ public class AffairController {
     AffairRepository affairRepository;
 
     @GetMapping("/affair")
-    @PreAuthorize("hasRole('USER')")
     public Map<String,List<Affair>> getAllAffair() {
         List<Affair> affairs = affairRepository.findAll();
         Map<String,List<Affair>> response = new HashMap<>();

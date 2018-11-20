@@ -2,9 +2,7 @@ package com.ubosque.sgdaubosque.controller;
 
 import com.ubosque.sgdaubosque.exception.AppException;
 import com.ubosque.sgdaubosque.model.Area;
-//import com.ubosque.sgdaubosque.exception.AppException;
 import com.ubosque.sgdaubosque.model.Profile;
-// import com.ubosque.sgdaubosque.model.RoleName;
 import com.ubosque.sgdaubosque.model.User;
 import com.ubosque.sgdaubosque.payload.ApiResponse;
 import com.ubosque.sgdaubosque.payload.JwtAuthenticationResponse;
@@ -12,7 +10,6 @@ import com.ubosque.sgdaubosque.payload.LoginRequest;
 import com.ubosque.sgdaubosque.payload.SignUpRequest;
 import com.ubosque.sgdaubosque.repository.AreaRepository;
 import com.ubosque.sgdaubosque.repository.ProfileRepository;
-//import com.ubosque.sgdaubosque.repository.RoleRepository;
 import com.ubosque.sgdaubosque.repository.UserRepository;
 import com.ubosque.sgdaubosque.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,22 +20,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by rajeevkumarsingh on 02/08/17.
  */
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api")
 public class AuthController {
 
   @Autowired
@@ -59,7 +53,7 @@ public class AuthController {
   @Autowired
   AreaRepository areaRepository;
 
-  @PostMapping("/signin")
+  @PostMapping("/auth/signin")
   /**
    * authenticateUser valida las credenciales del usuario user y password
    * {@link /api/auth/signin}
@@ -77,7 +71,7 @@ public class AuthController {
     return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
   }
 
-  @PostMapping("/signup")
+  @PostMapping("/auth/signup")
   /**
    * registerUser permite la creacion de un usuario
    * @param signUpRequest
@@ -91,10 +85,11 @@ public class AuthController {
     if (userRepository.existsByEmail(signUpRequest.getEmail())) {
       return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"), HttpStatus.BAD_REQUEST);
     }
-    // Creating user's account
+    // Creating user's accountx
     User user = new User(signUpRequest.getName(), signUpRequest.getLastname(), signUpRequest.getEmail(),
         signUpRequest.getPassword());
 
+    user.setUserName(signUpRequest.getUsername());
     user.setPassword(passwordEncoder.encode(user.getPassword()));
 
     Profile useProfile = profileRepository.findById(Long.parseLong(signUpRequest.getProfile()))
@@ -113,5 +108,10 @@ public class AuthController {
         .buildAndExpand(result.getName()).toUri();
 
     return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+  }
+
+  @GetMapping("/users")
+  public List<User> getAllUsers(){
+    return userRepository.findAllUsers();
   }
 }
