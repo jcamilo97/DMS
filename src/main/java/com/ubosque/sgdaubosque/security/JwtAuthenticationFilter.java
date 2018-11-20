@@ -1,10 +1,5 @@
 package com.ubosque.sgdaubosque.security;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.ubosque.sgdaubosque.model.Profile;
-import com.ubosque.sgdaubosque.model.User;
-import com.ubosque.sgdaubosque.payload.RolOrProfile;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.UUID;
 
 /**
  * Created by rajeevkumarsingh on 19/08/17.
@@ -41,27 +36,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-            Gson gson = new Gson();
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 UUID userId = tokenProvider.getUserIdFromJWT(jwt);
                 Claims claimsUser = tokenProvider.getUserBody(jwt);
-                User user = gson.fromJson(claimsUser.get("user").toString(),User.class);
-                String array = gson.toJson(claimsUser.get("roles"));
-                List<RolOrProfile> setRoles = gson.fromJson(array, new TypeToken<List<RolOrProfile>>(){}.getType());
-
-                Set<Profile> profiles = new HashSet<>();
-                profiles.add( new Profile( setRoles.get(0).getName()));
-                user.setId(userId);
-                user.setProfiles(profiles);
-                /*
-                user.setId(userId);
-                user.setProfiles(list);
                 /*
                     Note that you could also encode the user's username and roles inside JWT claims
                     and create the UserDetails object by parsing those claims from the JWT.
                     That would avoid the following database hit. It's completely up to you.
                  */
-                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                UserDetails userDetails = customUserDetailsService.loadUserByToken(claimsUser, userId);
+                        //customUserDetailsService.loadUserById(userId);
                         //customUserDetailsService.loadUserByToken(claimsUser, userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -70,6 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
+            //return;
         }
 
         filterChain.doFilter(request, response);
