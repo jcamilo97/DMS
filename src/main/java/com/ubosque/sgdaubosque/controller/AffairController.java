@@ -9,7 +9,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController()
 @RequestMapping("/api")
@@ -20,8 +23,11 @@ public class AffairController {
 
     @GetMapping("/affair")
     @PreAuthorize("hasRole('USER')")
-    public List<Affair> getAllAffair() {
-        return affairRepository.findAll();
+    public Map<String,List<Affair>> getAllAffair() {
+        List<Affair> affairs = affairRepository.findAll();
+        Map<String,List<Affair>> response = new HashMap<>();
+        response.put("affairs", affairs);
+        return response;
     }
 
     @PostMapping("/affair")

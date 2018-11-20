@@ -1,6 +1,8 @@
 package com.ubosque.sgdaubosque.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -28,8 +30,11 @@ public class AreaController {
     AreaRepository areaRepository;
 
     @GetMapping("/area")
-    public List<Area> getAllArea() {
-        return areaRepository.findAll();
+    public Map<String,List<Area>> getAllArea() {
+        List<Area> affairs = areaRepository.findAll();
+        Map<String,List<Area>> response = new HashMap<>();
+        response.put("affairs", affairs);
+        return response;
     }
 
     @PostMapping("/area")
